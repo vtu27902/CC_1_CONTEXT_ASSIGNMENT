@@ -1,0 +1,22 @@
+(ns solution
+  (:gen-class))
+
+(def MOD (+ 100000000 7))  ;; 10^8 + 7
+
+(defn precompute-fib [limit]
+  (let [fib (transient [0 1])]
+    (loop [i 2 fibv fib]
+      (if (> i limit)
+        (persistent! fibv)
+        (recur (inc i)
+               (conj! fibv (mod (+ (nth fibv (dec i))
+                                   (nth fibv (- i 2))) MOD)))))))
+
+(defn -main [& args]
+  (let [input (slurp in)
+        lines (clojure.string/split-lines input)
+        t (Integer/parseInt (first lines))
+        nums (map #(Integer/parseInt %) (rest lines))
+        fibs (precompute-fib 10000)]
+    (doseq [n nums]
+      (println (nth fibs n)))))
